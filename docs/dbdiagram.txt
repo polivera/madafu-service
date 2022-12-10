@@ -1,0 +1,107 @@
+enum accounts_status {
+  enabled
+  disabled
+}
+
+enum enum_currencies {
+  usd
+  eur
+  ars
+}
+
+// ---------------------------------------
+Table accounts as AC {
+  id uuid [pk]
+  user_id uuid
+  name varchar
+  status accounts_status
+}
+// References
+Ref: AC.user_id > U.id
+
+// ---------------------------------------
+Table users as U {
+  id uuid [pk] // auto-increment
+  email varchar
+  password timestamp
+  status int
+  default_account uuid
+}
+// References
+Ref: U.default_account > AC.id
+
+// ---------------------------------------
+Table sources as SO {
+  id uuid [pk]
+  account_id uuid
+  name varchar
+  currency enum_currencies
+  amount float8
+  can_use_to_pay boolean
+}
+// References
+Ref: SO.account_id > AC.id
+
+// ---------------------------------------
+Table categories as CA {
+  id int [pk, increment]
+  name varchar
+  status tinyint
+  color string
+}
+
+// ---------------------------------------
+Table daily_expenses as DE {
+  id uuid [pk]
+  account_id uuid
+  source_id uuid
+  category_id int
+  description varchar
+  amount float
+  currency enum_currencies
+  date date
+}
+Ref: DE.account_id > AC.id
+Ref: DE.source_id > SO.id
+Ref: DE.category_id > CA.id
+
+// ---------------------------------------
+enum monthly_expense_status {
+  draft
+  new
+  in_progress
+  finish
+}
+
+Table monthly_expense as ME {
+  id uuid [pk]
+  account_id uuid
+  category_id int
+  description varchar
+  currency enum_currencies
+  date_added date
+  date_end date
+  group string
+  status monthly_expense_status 
+}
+Ref: ME.account_id > AC.id
+Ref: ME.category_id > CA.id
+
+// ---------------------------------------
+enum monthly_entry_status {
+  draft
+  pending
+  payed
+}
+Table monthly_entry as MET {
+  id uuid [pk]
+  monthly_expense_id uuid
+  amount float
+  due_date date
+  status monthly_entry_status
+  daily_expense_id uuid [null]
+  entry_count int
+}
+Ref: MET.monthly_expense_id > ME.id
+Ref: MET.daily_expense_id > DE.id
+
