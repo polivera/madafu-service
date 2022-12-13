@@ -23,8 +23,8 @@ export class Category {
 
   // External table reference to this entity
   @OneToMany(() => DailyEntry, (dailyEntry) => dailyEntry.category)
-  dailyEntries: Promise<DailyEntry[]>;
+  dailyEntries: DailyEntry[];
 
   @OneToMany(() => MonthlyExpense, (monthlyExpense) => monthlyExpense.category)
-  monthlyExpenses: Promise<MonthlyExpense[]>;
+  monthlyExpenses: MonthlyExpense[];
 }

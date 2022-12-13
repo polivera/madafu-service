@@ -1,5 +1,10 @@
 export enum UserStatus {
-  CREATED = 'created',
-  VERIFIED = 'verified',
-  DISABLED = 'disabled',
+  CREATED = 'CREATED',
+  VERIFIED = 'VERIFIED',
+  DISABLED = 'DISABLED',
+}
+
+export enum UserRoles {
+  USER = 'USER',
+  ADMIN = 'ADMIN',
 }

@@ -1,6 +1,6 @@
 import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Account } from '../account/account.entity';
-import { UserStatus } from './user.types';
+import { UserRoles, UserStatus } from './user.types';
 
 @Entity('users')
 export class User {
@@ -15,6 +15,13 @@ export class User {
 
   @Column({
     type: 'enum',
+    enum: UserRoles,
+    default: UserRoles.USER,
+  })
+  role: UserRoles;
+
+  @Column({
+    type: 'enum',
     enum: UserStatus,
     default: UserStatus.CREATED,
     nullable: false,
@@ -22,5 +29,5 @@ export class User {
   status: UserStatus;
 
   @OneToMany(() => Account, (account) => account.user)
-  accounts: Promise<Account[]>;
+  accounts: Account[];
 }

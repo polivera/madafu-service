@@ -12,6 +12,8 @@ import { Source } from '../source/source.entity';
 import { User } from '../user/user.entity';
 import { AccountStatus } from './account.types';
 
+export const DEFAULT_ACCOUNT_NAME = 'Default';
+
 @Entity('accounts')
 export class Account {
   @PrimaryGeneratedColumn('uuid')
@@ -20,9 +22,9 @@ export class Account {
   @Column({ type: 'uuid', nullable: false })
   userId: string;
 
-  @ManyToOne(() => User, (user) => user.accounts, { nullable: false })
+  @ManyToOne(() => User, (user) => user.id, { nullable: false })
   @JoinColumn()
-  user: Promise<User>;
+  user: User;
 
   @Column({ nullable: false })
   name: string;
@@ -40,11 +42,11 @@ export class Account {
 
   // External entities that relate to his entity
   @OneToMany(() => Source, (source) => source.account)
-  accounts: Promise<Source[]>;
+  accounts: Source[];
 
   @OneToMany(() => DailyEntry, (dailyEntry) => dailyEntry.account)
-  dailyEntries: Promise<DailyEntry[]>;
+  dailyEntries: DailyEntry[];
 
   @OneToMany(() => MonthlyExpense, (monthlyExpense) => monthlyExpense.account)
-  monthlyExpenses: Promise<MonthlyExpense[]>;
+  monthlyExpenses: MonthlyExpense[];
 }

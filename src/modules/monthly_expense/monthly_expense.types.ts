@@ -1,6 +1,6 @@
 export enum MonthlyExpenseStatus {
-  DRAFT = 'draft',
-  NEW = 'new',
-  IN_PROGRESS = 'in_progress',
-  FINISHED = 'finished',
+  DRAFT = 'DRAFT',
+  NEW = 'NEW',
+  IN_PROGRESS = 'IN_PROGRESS',
+  FINISHED = 'FINISHED',
 }

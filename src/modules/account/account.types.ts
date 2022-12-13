@@ -1,4 +1,4 @@
 export enum AccountStatus {
-  ENABLE = 'enabled',
-  DISABLE = 'disabled',
+  ENABLE = 'ENABLED',
+  DISABLE = 'DISABLED',
 }

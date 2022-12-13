@@ -17,15 +17,15 @@ export class DailyEntry {
 
   @ManyToOne(() => Account, (account) => account.id, { nullable: false })
   @JoinColumn()
-  account: Promise<Account>;
+  account: Account;
 
   @ManyToOne(() => Source, (source) => source.id, { nullable: false })
   @JoinColumn()
-  source: Promise<Source>;
+  source: Source;
 
   @ManyToOne(() => Category, (category) => category.id, { nullable: false })
   @JoinColumn()
-  category: Promise<Category>;
+  category: Category;
 
   @Column({ nullable: false })
   description: string;
