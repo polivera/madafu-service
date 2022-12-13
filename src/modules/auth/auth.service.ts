@@ -44,7 +44,6 @@ export class AuthService {
       secret: this.configService.get<string>('token.key'),
       expiresIn: this.configService.get<string>('token.refreshExpiration'),
     });
-
     return {
       accessToken,
       refreshToken,

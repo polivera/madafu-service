@@ -7,6 +7,9 @@ export class Source {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({ nullable: false })
+  accountId: string;
+
   @ManyToOne(() => Account, (account) => account.id, { nullable: false })
   account: Account;
 

@@ -4,6 +4,8 @@ export enum ValidationErrors {
   NOT_EMPTY = 'NOT_EMPTY',
   INVALID_EMAIL = 'INVALID_EMAIL',
   REQUIREMENTS_NOT_MET = 'REQUIREMENTS_NOT_MET',
+  INVALID_TYPE = 'INVALID_TYPE',
+  INVALID_VALUE = 'INVALID_VALUE',
 }
 
 export function IsValidPassword(validationOptions?: ValidationOptions) {

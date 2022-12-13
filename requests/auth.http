@@ -1,4 +1,7 @@
-POST http://localhost:3000/user/create
+@host=http://localhost:3000
+###
+# @name Login user
+POST /auth/login
 Content-Type: application/json
 
 {

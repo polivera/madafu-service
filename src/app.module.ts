@@ -38,6 +38,7 @@ import { MonthlyEntryModule } from './modules/monthly_entry/monthly_entry.module
         database: configService.get<string>('database.dbname'),
         autoLoadEntities: true,
         synchronize: configService.get<boolean>('database.sync'),
+        logging: true,
       }),
     }),
     MonthlyEntryModule,

@@ -13,11 +13,13 @@ import { User } from './user.entity';
 import { UserService } from './user.service';
 import { hashPassword } from '../../utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
+import { JwtAdminGuard } from '../auth/guards/jwt.admin.guard';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @UseGuards(JwtAdminGuard)
   @Post('/create')
   async createUser(@Body() userCreateDto: UserRequestCreateDto) {
     // Create user model
