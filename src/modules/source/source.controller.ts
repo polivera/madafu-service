@@ -1,7 +1,7 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { ValidationErrorResponse, ErrorCodes } from 'src/utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
 import { SourceRequestCreateDto } from './dtos/source.request.create.dto';
-import { Source } from './source.entity';
 import { SourceService } from './source.service';
 
 @Controller('source')
@@ -14,13 +14,16 @@ export class SourceController {
     @Body() createSourceDto: SourceRequestCreateDto,
     @Req() req: any,
   ) {
-    const sourceModel = new Source();
-    sourceModel.name = createSourceDto.name;
-    sourceModel.amount = createSourceDto.amount;
-    sourceModel.currency = createSourceDto.currency;
-    sourceModel.canUseToPay = createSourceDto.canUseToPay;
-    sourceModel.account = req.user.accountId;
-    return this.sourceService.saveSource(sourceModel);
+    const existingSource = await this.sourceService.getSourceByAccountAndName(
+      req.user.accountId,
+      createSourceDto.name,
+    );
+    if (existingSource) {
+      return ValidationErrorResponse.builder()
+        .addErrorMessage(`name: ${ErrorCodes.DUPLICATE_VALUE}`)
+        .badRequestResponse();
+    }
+    return this.sourceService.saveSource(createSourceDto, req.user.accountId);
   }
 
   @UseGuards(JwtAccessGuard)

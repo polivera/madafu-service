@@ -7,7 +7,7 @@ export class Source {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ nullable: false })
+  @Column({ type: 'uuid', nullable: false })
   accountId: string;
 
   @ManyToOne(() => Account, (account) => account.id, { nullable: false })
@@ -24,7 +24,21 @@ export class Source {
   })
   currency: Currency;
 
-  @Column({ type: 'money', default: 0, nullable: false })
+  @Column({
+    type: 'decimal',
+    precision: 8,
+    scale: 2,
+    default: 0,
+    nullable: false,
+    transformer: {
+      to(value: number): number {
+        return value;
+      },
+      from(value: string): number {
+        return parseFloat(value);
+      },
+    },
+  })
   amount: number;
 
   @Column({ type: 'boolean', default: true, nullable: false })

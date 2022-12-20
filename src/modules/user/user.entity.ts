@@ -2,8 +2,14 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 import { Account } from '../account/account.entity';
 import { UserRoles, UserStatus } from './user.types';
 
-@Entity('users')
+const TABLE_NAME = 'users';
+
+@Entity(TABLE_NAME)
 export class User {
+  static readonly EMAIL_FIELD = 'email';
+  static readonly STATUS_FIELD = 'status';
+  static readonly ACCOUNTS_FIELD = 'accounts';
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

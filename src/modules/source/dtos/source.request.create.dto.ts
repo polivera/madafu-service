@@ -1,28 +1,22 @@
-import {
-  IsBoolean,
-  IsCurrency,
-  IsEnum,
-  IsNotEmpty,
-  IsNumber,
-} from 'class-validator';
+import { IsBoolean, IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
 import { Currency } from 'src/app.types';
-import { ValidationErrors } from 'src/utils';
+import { ErrorCodes } from 'src/utils';
 
 export class SourceRequestCreateDto {
-  @IsNotEmpty({ message: `name: ${ValidationErrors.NOT_EMPTY}` })
+  @IsNotEmpty({ message: `name: ${ErrorCodes.NOT_EMPTY}` })
   name: string;
 
-  @IsEnum(Currency, { message: `currency: ${ValidationErrors.INVALID_VALUE}` })
+  @IsEnum(Currency, { message: `currency: ${ErrorCodes.INVALID_VALUE}` })
   currency: Currency;
 
-  @IsNotEmpty({ message: `amount: ${ValidationErrors.NOT_EMPTY}` })
+  @IsNotEmpty({ message: `amount: ${ErrorCodes.NOT_EMPTY}` })
   @IsNumber(
     { maxDecimalPlaces: 2 },
-    { message: `amount: ${ValidationErrors.INVALID_TYPE}` },
+    { message: `amount: ${ErrorCodes.INVALID_TYPE}` },
   )
   amount: number;
 
-  @IsNotEmpty({ message: `canUseToPay: ${ValidationErrors.NOT_EMPTY}` })
-  @IsBoolean({ message: `canUseToPay: ${ValidationErrors.INVALID_TYPE}` })
+  @IsNotEmpty({ message: `canUseToPay: ${ErrorCodes.NOT_EMPTY}` })
+  @IsBoolean({ message: `canUseToPay: ${ErrorCodes.INVALID_TYPE}` })
   canUseToPay: boolean;
 }

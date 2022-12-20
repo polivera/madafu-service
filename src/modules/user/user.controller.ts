@@ -1,19 +1,9 @@
-import {
-  Body,
-  Controller,
-  Get,
-  HttpException,
-  HttpStatus,
-  Post,
-  Req,
-  UseGuards,
-} from '@nestjs/common';
-import { UserRequestCreateDto } from './dtos/user.request.create.dto';
-import { User } from './user.entity';
-import { UserService } from './user.service';
-import { hashPassword } from '../../utils';
+import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import { ValidationErrorResponse, ErrorCodes } from '../../utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
 import { JwtAdminGuard } from '../auth/guards/jwt.admin.guard';
+import { UserRequestCreateDto } from './dtos/user.request.create.dto';
+import { UserService } from './user.service';
 
 @Controller('user')
 export class UserController {
@@ -22,17 +12,22 @@ export class UserController {
   @UseGuards(JwtAdminGuard)
   @Post('/create')
   async createUser(@Body() userCreateDto: UserRequestCreateDto) {
-    // Create user model
-    const userModel = new User();
-    userModel.email = userCreateDto.email;
-    userModel.password = await hashPassword(userCreateDto.password);
+    const emailTaken = await this.userService.findUserByEmail(
+      userCreateDto.email,
+    );
+    if (!emailTaken) {
+      return ValidationErrorResponse.builder()
+        .addErrorMessage(`email: ${ErrorCodes.DUPLICATE_VALUE}`)
+        .badRequestResponse();
+    }
+
     try {
-      return await this.userService.createUser(userModel);
+      return await this.userService.createUser(userCreateDto);
     } catch (err) {
-      throw new HttpException(
-        'Unexpected database error',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
+      return ValidationErrorResponse.builder()
+        .addErrorMessage('Unexpected database error')
+        .addErrorMessage(`stacktrace: ${err}`)
+        .internalServerError();
     }
   }
 

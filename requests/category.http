@@ -1,19 +1,19 @@
 @host=http://localhost:3000
 @token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYjU2ZWU1OC1jM2M0LTQ3MDUtODMzZi1hODBiZmY1M2JkMTkiLCJhY2NvdW50SWQiOiI4NDE3NGVmYi0wNTMwLTRjNmYtOGJkZC04MDY3ZGM3NDdjNGQiLCJlbWFpbCI6InRlc3RAdGVzdC5sb2NhbCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY3MTEwMDQ5NywiZXhwIjoxNjcxMTg2ODk3fQ.WJYjPN8jX4mSgD4monZ1Z50JkVWXa5Y1YTSGfVOo80c
 ###
-# @name Get user profile
-GET /user/profile
+# @name Get list of active categories
+GET /category/list
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
 ###
-# @name Create user
-POST /user/create
+# @name Create category
+POST /category/create
 Content-Type: application/json
 Authorization: Bearer {{token}} 
 
 {
-  "email": "test@test.local",
-  "password": "Test.123"
+  "name": "Servicios",
+  "color": "AAFF99"
 }
 

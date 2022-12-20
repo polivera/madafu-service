@@ -1,5 +1,5 @@
 @host=http://localhost:3000
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYjU2ZWU1OC1jM2M0LTQ3MDUtODMzZi1hODBiZmY1M2JkMTkiLCJhY2NvdW50SWQiOiI4NDE3NGVmYi0wNTMwLTRjNmYtOGJkZC04MDY3ZGM3NDdjNGQiLCJlbWFpbCI6InRlc3RAdGVzdC5sb2NhbCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY3MDkzOTQ5MywiZXhwIjoxNjcxMDI1ODkzfQ.woVDEzOg450CBX3dhL3wsBh9Hcvwcn-CT4Gkrguuplk
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYjU2ZWU1OC1jM2M0LTQ3MDUtODMzZi1hODBiZmY1M2JkMTkiLCJhY2NvdW50SWQiOiI4NDE3NGVmYi0wNTMwLTRjNmYtOGJkZC04MDY3ZGM3NDdjNGQiLCJlbWFpbCI6InRlc3RAdGVzdC5sb2NhbCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY3MTIwNTcwMCwiZXhwIjoxNjcxMjkyMTAwfQ.1Lw7ieQzrJsoeGYsGXS09DA82RoUxOjkhnH7jsg2cmc
 ###
 # @name Get list of sources 
 GET /source/list
@@ -13,7 +13,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}} 
 
 {
-  "name": "Santander",
+  "name": "Galicia",
   "currency": "EUR",
   "amount": 8342.45,
   "canUseToPay": true

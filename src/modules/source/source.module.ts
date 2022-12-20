@@ -9,5 +9,6 @@ import { SourceService } from './source.service';
   imports: [TypeOrmModule.forFeature([Source])],
   providers: [JwtAccessStrategy, SourceService],
   controllers: [SourceController],
+  exports: [SourceService],
 })
 export class SourceModule {}

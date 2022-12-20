@@ -4,6 +4,8 @@ import { User } from './user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Account, DEFAULT_ACCOUNT_NAME } from '../account/account.entity';
 import { UserStatus } from './user.types';
+import { UserRequestCreateDto } from './dtos/user.request.create.dto';
+import { hashPassword } from 'src/utils';
 
 @Injectable()
 export class UserService {
@@ -12,7 +14,11 @@ export class UserService {
 
   constructor(private readonly dataSource: DataSource) {}
 
-  async createUser(userModel: User) {
+  async createUser(createUserDto: UserRequestCreateDto) {
+    const userModel = new User();
+    userModel.email = createUserDto.email;
+    userModel.password = await hashPassword(createUserDto.password);
+
     return this.dataSource.transaction(async (manager) => {
       const newUserModel = await manager.save(userModel);
       const accountModel = new Account();
@@ -25,9 +31,17 @@ export class UserService {
   }
 
   async findVerifiedUserByEmail(email: string): Promise<User> {
-    return this.repository.findOne({
-      where: { email, status: UserStatus.VERIFIED },
-      relations: { accounts: true },
-    });
+    return this.repository
+      .createQueryBuilder('u')
+      .innerJoinAndSelect(`u.${User.ACCOUNTS_FIELD}`, 'ac')
+      .where(`u.${User.EMAIL_FIELD}= :email`, { email })
+      .andWhere(`u.${User.STATUS_FIELD}= :status`, {
+        status: UserStatus.VERIFIED,
+      })
+      .getOne();
+  }
+
+  async findUserByEmail(email: string): Promise<User> {
+    return this.repository.findOneBy({ email });
   }
 }
