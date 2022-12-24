@@ -7,6 +7,7 @@ import { SourceService } from './source.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Source])],
+  // TODO: Check if JwtAccessStrategy provider is needed here
   providers: [JwtAccessStrategy, SourceService],
   controllers: [SourceController],
   exports: [SourceService],

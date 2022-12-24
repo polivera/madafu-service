@@ -1,22 +1,40 @@
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Account } from '../account/account.entity';
 import { Category } from '../category/category.entity';
+import { Source } from '../source/source.entity';
 import { MonthlyExpenseStatus } from './monthly_expense.types';
 
 @Entity('monthly_expenses')
 export class MonthlyExpense {
+  static readonly ACCOUNT_ID = 'accountId';
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Index()
+  @Column({ type: 'uuid' })
+  accountId: string;
 
   @ManyToOne(() => Account, (account) => account.id, { nullable: false })
   @JoinColumn()
   account: Account;
+
+  @Column({ type: 'uuid' })
+  sourceId: string;
+
+  @ManyToOne(() => Source, (source) => source.id, { nullable: false })
+  @JoinColumn()
+  source: Source;
+
+  @Column()
+  categoryId: number;
 
   @ManyToOne(() => Category, (category) => category.id, { nullable: false })
   @JoinColumn()
@@ -25,21 +43,12 @@ export class MonthlyExpense {
   @Column({ nullable: false })
   description: string;
 
-  @Column({ type: 'money', nullable: false })
-  amount: number;
-
   @Column({
     type: 'timestamptz',
     nullable: false,
     default: 'NOW()',
   })
   dateAdded: Date;
-
-  @Column({ type: 'timestamptz', nullable: true })
-  dateEnd: Date | null;
-
-  @Column()
-  group: string;
 
   @Column({
     type: 'enum',

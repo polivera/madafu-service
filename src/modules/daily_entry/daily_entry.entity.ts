@@ -2,6 +2,7 @@ import { Currency } from 'src/app.types';
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -23,6 +24,7 @@ export class DailyEntry {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Index()
   @Column({ type: 'uuid' })
   accountId: string;
 
@@ -71,6 +73,7 @@ export class DailyEntry {
   })
   currency: Currency;
 
+  @Index()
   @Column({ type: 'timestamptz', precision: 3 })
   date: Date;
 }

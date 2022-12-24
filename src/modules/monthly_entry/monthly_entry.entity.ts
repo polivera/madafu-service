@@ -1,6 +1,7 @@
 import {
   Column,
   Entity,
+  Index,
   JoinColumn,
   ManyToOne,
   PrimaryGeneratedColumn,
@@ -11,20 +12,40 @@ import { MonthlyEntryStatus } from './monthly_entry.types';
 
 @Entity('monthly_entries')
 export class MonthlyEntry {
+  static readonly PAYMENT_DATE = 'paymentDate';
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
+
+  @Column({ type: 'uuid' })
+  monthlyExpenseId: string;
 
   @ManyToOne(() => MonthlyExpense, (monthlyExpense) => monthlyExpense.id, {
     nullable: false,
   })
   @JoinColumn()
-  monthlyExpense: Promise<MonthlyExpense>;
+  monthlyExpense: MonthlyExpense;
 
-  @Column({ type: 'money', nullable: false })
+  @Column({
+    type: 'decimal',
+    precision: 8,
+    scale: 2,
+    default: 0,
+    nullable: false,
+    transformer: {
+      to(value: number): number {
+        return value;
+      },
+      from(value: string): number {
+        return parseFloat(value);
+      },
+    },
+  })
   amount: number;
 
+  @Index()
   @Column({ type: 'date' })
-  dueDate: Date;
+  paymentDate: string;
 
   @Column({
     type: 'enum',
@@ -33,12 +54,12 @@ export class MonthlyEntry {
   })
   status: MonthlyEntryStatus;
 
+  @Column({ type: 'uuid', nullable: true })
+  dailyEntryId: string;
+
   @ManyToOne(() => DailyEntry, (dailyEntry) => dailyEntry.id, {
     nullable: true,
   })
   @JoinColumn()
-  dailyEntry: string;
-
-  @Column()
-  entryCount: number;
+  dailyEntry: DailyEntry;
 }

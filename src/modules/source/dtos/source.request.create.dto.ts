@@ -1,5 +1,5 @@
-import { IsBoolean, IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
-import { Currency } from 'src/app.types';
+import { IsEnum, IsNotEmpty, IsNumber } from 'class-validator';
+import { Currency, SourceType } from 'src/app.types';
 import { ErrorCodes } from 'src/utils';
 
 export class SourceRequestCreateDto {
@@ -16,7 +16,7 @@ export class SourceRequestCreateDto {
   )
   amount: number;
 
-  @IsNotEmpty({ message: `canUseToPay: ${ErrorCodes.NOT_EMPTY}` })
-  @IsBoolean({ message: `canUseToPay: ${ErrorCodes.INVALID_TYPE}` })
-  canUseToPay: boolean;
+  @IsNotEmpty({ message: `type: ${ErrorCodes.NOT_EMPTY}` })
+  @IsEnum(SourceType, { message: `type: ${ErrorCodes.INVALID_VALUE}` })
+  type: SourceType;
 }

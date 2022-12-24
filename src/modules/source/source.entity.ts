@@ -1,5 +1,11 @@
-import { Currency } from 'src/app.types';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Currency, SourceType } from 'src/app.types';
+import {
+  Column,
+  Entity,
+  Index,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 import { Account } from '../account/account.entity';
 
 @Entity('sources')
@@ -7,6 +13,7 @@ export class Source {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Index()
   @Column({ type: 'uuid', nullable: false })
   accountId: string;
 
@@ -19,7 +26,7 @@ export class Source {
   @Column({
     type: 'enum',
     enum: Currency,
-    default: Currency.USD,
+    default: Currency.EUR,
     nullable: false,
   })
   currency: Currency;
@@ -41,6 +48,10 @@ export class Source {
   })
   amount: number;
 
-  @Column({ type: 'boolean', default: true, nullable: false })
-  canUseToPay: boolean;
+  @Column({
+    type: 'enum',
+    enum: SourceType,
+    nullable: false,
+  })
+  type: SourceType;
 }

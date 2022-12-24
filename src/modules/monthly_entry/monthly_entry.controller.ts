@@ -7,45 +7,37 @@ import {
   ParseIntPipe,
   Post,
   Req,
-  UseGuards,
+  UseGuards
 } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import { SourceType } from 'src/app.types';
 import { ErrorCodes, ValidationErrorResponse } from 'src/utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
 import { CategoryService } from '../category/category.service';
+import { MonthlyExpenseService } from '../monthly_expense/monthly_expense.service';
 import { SourceService } from '../source/source.service';
-import { DailyEntryService } from './daily_entry.service';
-import { DailyEntryRequestCreateDto } from './dtos/daily_entry.request.create.dto';
+import { MonthlyEntryRequestCreateDto } from './dto/monthly_entry.request.create.dto';
+import { MonthlyEntryService } from './monthly_entry.service';
 
-@Controller('daily-entry')
-export class DailyEntryController {
+@Controller('monthly-entry')
+export class MonthlyEntryController {
   constructor(
-    private readonly entryService: DailyEntryService,
+    private readonly monthlyExpenseService: MonthlyExpenseService,
+    private readonly monthlyEntryService: MonthlyEntryService,
     private readonly sourceService: SourceService,
     private readonly categoryService: CategoryService,
   ) {}
-
   @UseGuards(JwtAccessGuard)
   @Post('/create')
-  async createDailyEntry(
-    @Body() entry: DailyEntryRequestCreateDto,
-    @Req() req: any,
-  ) {
+  async create(@Body() entry: MonthlyEntryRequestCreateDto, @Req() req: any) {
     const dbSource = await this.sourceService.getSourceById(entry.sourceId);
     if (!dbSource) {
       return ValidationErrorResponse.builder()
         .addErrorMessage(`sourceId: ${ErrorCodes.RELATION_NOT_FOUND}`)
         .badRequestResponse();
     }
-    // TODO: Remove currency from daily entry
-    if (dbSource.currency !== entry.currency) {
-      return ValidationErrorResponse.builder()
-        .addErrorMessage(`sourceId: ${ErrorCodes.CURRENCY_MISMATCH}`)
-        .badRequestResponse();
-    }
     if (
-      ![SourceType.DEBIT, SourceType.CASH].find((st) => st === dbSource.type)
+      ![SourceType.DEBIT, SourceType.CREDIT].find((st) => st === dbSource.type)
     ) {
       return ValidationErrorResponse.builder()
         .addErrorMessage(`sourceId: ${ErrorCodes.INVALID_VALUE}`)
@@ -61,32 +53,29 @@ export class DailyEntryController {
         .addErrorMessage(`cateoryId: ${ErrorCodes.RELATION_NOT_FOUND}`)
         .badRequestResponse();
     }
-
-    if (!entry.date) {
-      entry.date = DateTime.utc().toISO();
+    const startOfMonthDate = DateTime.utc().plus({ month: 1 }).startOf('month');
+    if (!entry.startDate) {
+      entry.startDate = startOfMonthDate.toISO();
     } else {
-      const paramDate = DateTime.fromISO(entry.date, { zone: 'UTC' });
-      if (
-        !paramDate.isValid ||
-        paramDate >= DateTime.utc() ||
-        paramDate <= DateTime.utc().startOf('month')
-      ) {
+      const paramDate = DateTime.fromISO(entry.startDate, { zone: 'UTC' });
+      if (!paramDate.isValid || paramDate < startOfMonthDate) {
         return ValidationErrorResponse.builder()
-          .addErrorMessage(`date: ${ErrorCodes.INVALID_VALUE}`)
+          .addErrorMessage(`startDate: ${ErrorCodes.INVALID_VALUE}`)
           .badRequestResponse();
       }
-      entry.date = paramDate.toISO();
     }
+    entry.lapse = entry.lapse || 1;
 
-    return this.entryService.createEntryAndUpdateSource(
-      req.user.accountId,
+    return this.monthlyExpenseService.createMonthlyEntry(
       entry,
+      dbSource,
+      req.user.accountId,
     );
   }
 
   @UseGuards(JwtAccessGuard)
   @Get('/list/:year/:month')
-  async listDailyEntries(
+  async listMonthlyEntries(
     @Param('year', ParseIntPipe) year: number,
     @Param('month', ParseIntPipe) month: number,
     @Req() req: any,
@@ -95,15 +84,11 @@ export class DailyEntryController {
       throw new NotFoundException();
     }
     const paramDate = DateTime.utc(year, month, 1);
-    const entries = await this.entryService.getEntryList(
+    const entries = await this.monthlyEntryService.listEntries(
       paramDate.startOf('month').toJSDate(),
       paramDate.endOf('month').toJSDate(),
       req.user.accountId,
     );
-    const total = entries.reduce((acc, curr) => curr.amount + acc, 0);
-    return {
-      entries,
-      total,
-    };
+    return entries;
   }
 }

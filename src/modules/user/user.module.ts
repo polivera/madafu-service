@@ -10,6 +10,8 @@ import { JwtAdminStrategy } from '../auth/strategies/jwt.admin.strategy';
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
   controllers: [UserController],
+  // TODO: Check if the Jwt strategy providers should be somewhere else, like in the app module.
+  // Take note that daily_entry use it and there is no jwt provider
   providers: [UserService, AccountService, JwtAccessStrategy, JwtAdminStrategy],
   exports: [UserService],
 })

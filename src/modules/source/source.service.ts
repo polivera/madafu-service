@@ -17,7 +17,7 @@ export class SourceService {
     sourceModel.name = createSourceDto.name;
     sourceModel.amount = createSourceDto.amount;
     sourceModel.currency = createSourceDto.currency;
-    sourceModel.canUseToPay = createSourceDto.canUseToPay;
+    sourceModel.type = createSourceDto.type;
     sourceModel.accountId = accountId;
 
     return this.repository.save(sourceModel);

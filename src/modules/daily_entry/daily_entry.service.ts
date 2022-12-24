@@ -1,8 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { endOfMonth, startOfMonth } from 'date-fns';
 import { DateTime } from 'luxon';
-import { Between, DataSource, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { Source } from '../source/source.entity';
 import { DailyEntry } from './daily_entry.entity';
 import { DailyEntryRequestCreateDto } from './dtos/daily_entry.request.create.dto';
@@ -14,15 +13,6 @@ export class DailyEntryService {
 
   constructor(private readonly dataSource: DataSource) {}
 
-  async listEntries(entryDate: Date, accountId: string): Promise<DailyEntry[]> {
-    return this.repository.find({
-      where: {
-        date: Between(startOfMonth(entryDate), endOfMonth(entryDate)),
-        accountId,
-      },
-    });
-  }
-
   async getEntryList(
     start: Date,
     end: Date,
@@ -32,6 +22,17 @@ export class DailyEntryService {
       .createQueryBuilder('e')
       .innerJoinAndSelect(`e.source`, 'sc')
       .innerJoinAndSelect(`e.category`, 'cf')
+      .select([
+        'e.description',
+        'e.amount',
+        'e.currency',
+        'e.date',
+        'sc.id',
+        'sc.name',
+        'cf.id',
+        'cf.name',
+        'cf.color',
+      ])
       .where(`e.${DailyEntry.ACCOUNT_FIELD} = :accountId`, { accountId })
       .andWhere(`e.${DailyEntry.DATE_FIELD} BETWEEN :start AND :end `, {
         start,
