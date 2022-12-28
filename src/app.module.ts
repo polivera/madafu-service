@@ -1,17 +1,18 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { AuthModule } from './modules/auth/auth.module';
-import { CategoryModule } from './modules/category/category.module';
-import { SourceModule } from './modules/source/source.module';
-import { MonthlyExpenseModule } from './modules/monthly_expense/monthly_expense.module';
-import { DailyEntryModule } from './modules/daily_entry/daily_entry.module';
-import { UserModule } from './modules/user/user.module';
-import { AccountModule } from './modules/account/account.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
 import { databaseConfig, tokenConfig } from './config';
+import { AccountModule } from './modules/account/account.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { CategoryModule } from './modules/category/category.module';
+import { DailyEntryModule } from './modules/daily_entry/daily_entry.module';
 import { MonthlyEntryModule } from './modules/monthly_entry/monthly_entry.module';
+import { MonthlyExpenseModule } from './modules/monthly_expense/monthly_expense.module';
+import { SourceModule } from './modules/source/source.module';
+import { TokenModule } from './modules/token/token.module';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
   imports: [
@@ -42,6 +43,7 @@ import { MonthlyEntryModule } from './modules/monthly_entry/monthly_entry.module
       }),
     }),
     MonthlyEntryModule,
+    TokenModule,
   ],
   controllers: [AppController],
   providers: [AppService],
