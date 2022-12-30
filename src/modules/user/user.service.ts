@@ -44,4 +44,40 @@ export class UserService {
   async findUserByEmail(email: string): Promise<User> {
     return this.repository.findOneBy({ email });
   }
+
+  async listUsers(): Promise<User[]> {
+    return this.repository
+      .createQueryBuilder('u')
+      .innerJoin(
+        `u.${User.ACCOUNTS_FIELD}`,
+        'ac',
+        `ac.${Account.IS_SELECTED_FIELD}= :isSelected`,
+        { isSelected: true },
+      )
+      .select([
+        `u.${User.ID_FIELD}`,
+        `u.${User.EMAIL_FIELD}`,
+        `u.${User.ROLE_FIELD}`,
+        `u.${User.STATUS_FIELD}`,
+        `ac.${Account.ID_FIELD}`,
+        `ac.${Account.NAME_FIELD}`,
+      ])
+      .getMany();
+  }
+
+  async getSingleUser(id: string): Promise<User> {
+    return this.repository
+      .createQueryBuilder('u')
+      .innerJoin(`u.${User.ACCOUNTS_FIELD}`, 'ac')
+      .select([
+        `u.${User.ID_FIELD}`,
+        `u.${User.EMAIL_FIELD}`,
+        `u.${User.ROLE_FIELD}`,
+        `u.${User.STATUS_FIELD}`,
+        `ac.${Account.ID_FIELD}`,
+        `ac.${Account.NAME_FIELD}`,
+      ])
+      .where(`u.${User.ID_FIELD} = :id`, { id })
+      .getOne();
+  }
 }

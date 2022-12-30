@@ -17,6 +17,10 @@ export const DEFAULT_ACCOUNT_NAME = 'Default';
 
 @Entity('accounts')
 export class Account {
+  static readonly ID_FIELD = 'id';
+  static readonly NAME_FIELD = 'name';
+  static readonly IS_SELECTED_FIELD = 'isSelected';
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

@@ -6,14 +6,18 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Account } from '../account/account.entity';
+import { Token } from '../token/token.entity';
 import { UserRoles, UserStatus } from './user.types';
 
 const TABLE_NAME = 'users';
 
 @Entity(TABLE_NAME)
 export class User {
+  static readonly ID_FIELD = 'id';
   static readonly EMAIL_FIELD = 'email';
   static readonly STATUS_FIELD = 'status';
+  static readonly ROLE_FIELD = 'role';
+  // Join attribute name
   static readonly ACCOUNTS_FIELD = 'accounts';
 
   @PrimaryGeneratedColumn('uuid')
@@ -43,4 +47,7 @@ export class User {
 
   @OneToMany(() => Account, (account) => account.user)
   accounts: Account[];
+
+  @OneToMany(() => Token, (token) => token.user)
+  tokens: Token[];
 }

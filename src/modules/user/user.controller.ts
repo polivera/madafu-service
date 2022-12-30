@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ValidationErrorResponse, ErrorCodes } from '../../utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
 import { JwtAdminGuard } from '../auth/guards/jwt.admin.guard';
@@ -34,6 +42,21 @@ export class UserController {
   @UseGuards(JwtAccessGuard)
   @Get('/profile')
   async getCurrentUserProfile(@Req() req: any) {
-    console.log(req.user);
+    const dbUser = await this.userService.findUserByEmail(req.user.email);
+    delete dbUser.password;
+    return dbUser;
+  }
+
+  @UseGuards(JwtAdminGuard)
+  @Get('/list')
+  async getUserList() {
+    // TODO: Pagination here maybe?
+    return this.userService.listUsers();
+  }
+
+  @UseGuards(JwtAdminGuard)
+  @Get('/detail/:id')
+  async getUserDeatails(@Param('id') id: string) {
+    return this.userService.getSingleUser(id);
   }
 }
