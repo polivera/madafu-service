@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ValidationErrorResponse, ErrorCodes } from 'src/utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
 import { SourceRequestCreateDto } from './dtos/source.request.create.dto';
@@ -30,5 +40,27 @@ export class SourceController {
   @Get('/list')
   async getSources(@Req() req: any) {
     return this.sourceService.getSourcesForAccount(req.user.accountId);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Patch('/update/:id')
+  async updateSource(@Param('id') id: string, @Req() req: any) {
+    // TODO: Implement source update
+
+    // remember to look for source id and user id before update
+    // to make sure the source belong to the user
+    // If the source has been use for some expense, you can only edit name
+    console.log('implement source update', id, req.user.userId);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Delete('/remote/:id')
+  async removeAccount(@Param('id') id: string, @Req() req: any) {
+    // TODO: implement remove account
+
+    // remember to look for source id and user id before update
+    // to make sure the source belong to the user
+    // Only allow source deletion if the balance is 0
+    console.log('implement delete account', id, req.user.userId);
   }
 }

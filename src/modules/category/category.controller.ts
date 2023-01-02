@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { ValidationErrorResponse, ErrorCodes } from 'src/utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
 import { JwtAdminGuard } from '../auth/guards/jwt.admin.guard';
@@ -21,14 +29,10 @@ export class CategoryController {
     if (existingCategories.length) {
       const errorResponse = ValidationErrorResponse.builder();
       if (existingCategories.find((cat) => cat.name == createCategory.name)) {
-        errorResponse.addErrorMessage(
-          `name: ${ErrorCodes.DUPLICATE_VALUE}`,
-        );
+        errorResponse.addErrorMessage(`name: ${ErrorCodes.DUPLICATE_VALUE}`);
       }
       if (existingCategories.find((cat) => cat.color == createCategory.color)) {
-        errorResponse.addErrorMessage(
-          `color: ${ErrorCodes.DUPLICATE_VALUE}`,
-        );
+        errorResponse.addErrorMessage(`color: ${ErrorCodes.DUPLICATE_VALUE}`);
       }
       return errorResponse.badRequestResponse();
     }
@@ -47,5 +51,28 @@ export class CategoryController {
   @Get('/list')
   async getAllCategories() {
     return this.categoryService.getCategories();
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Get('/detail/:id')
+  async getCategoryDetail(@Param('id') id: string) {
+    // TODO: Implement this
+
+    console.log('Implement get category details', id);
+  }
+
+  @UseGuards(JwtAdminGuard)
+  @Patch('update/:id')
+  async updateCategory(@Param('id') id: string) {
+    // TODO: Implement this
+
+    console.log('Implement update category', id);
+  }
+
+  @UseGuards(JwtAdminGuard)
+  @Post('disable/:id')
+  async disableCategory(@Param('id') id: string) {
+    // TODO: Implement this
+    console.log('Implement category disable', id);
   }
 }

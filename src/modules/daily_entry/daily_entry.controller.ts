@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -38,7 +40,7 @@ export class DailyEntryController {
         .addErrorMessage(`sourceId: ${ErrorCodes.RELATION_NOT_FOUND}`)
         .badRequestResponse();
     }
-    // TODO: Remove currency from daily entry
+    // FIX: Remove currency from daily entry
     if (dbSource.currency !== entry.currency) {
       return ValidationErrorResponse.builder()
         .addErrorMessage(`sourceId: ${ErrorCodes.CURRENCY_MISMATCH}`)
@@ -105,5 +107,34 @@ export class DailyEntryController {
       entries,
       total,
     };
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Get('/details/:id')
+  async getEntryDetails(@Param('id') id: string) {
+    // TODO: Do we really need get entry details now?
+
+    // Remember to also filter by user id
+    console.log('check if we need this endpoint', id);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Patch('/update/:id')
+  async updateDailyEntry(@Param('id') id: string) {
+    // TODO: Implement this endpoint
+
+    // We should set a limit for how long can an entry be updated
+    // Remember to filter by user id as well
+    console.log('update daily entry', id);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Delete('/delete/:id')
+  async deleteDailyEntry(@Param('id') id: string) {
+    // TODO: Implement this
+
+    // Same as update, stablish an allow delete limit
+    // Remember to filter by user id
+    console.log('delete daily entry', id);
   }
 }

@@ -5,9 +5,11 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
+  Put,
   Req,
-  UseGuards
+  UseGuards,
 } from '@nestjs/common';
 import { DateTime } from 'luxon';
 import { SourceType } from 'src/app.types';
@@ -90,5 +92,26 @@ export class MonthlyEntryController {
       req.user.accountId,
     );
     return entries;
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Patch('/activate-draft/:id')
+  async convertDraftToActive(@Param('id') id: string) {
+    // TODO: Implement this
+
+    // Can only convert draft if the fist entry is in the future
+    // Remember to check for userId as well
+    console.log('Convert monthly entry to daily entry', id);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Patch('/update/:id')
+  async updateMonthlyEntry(@Param('id') id: string) {
+    // TODO: Implement this
+
+    // Can only edit entries that are not in process
+    // The change amount month by month should be done when converting to daily entry
+    // Remember to check for userId as well
+    console.log('Update monthly entry', id);
   }
 }

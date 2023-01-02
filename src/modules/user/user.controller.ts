@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -50,7 +51,7 @@ export class UserController {
   @UseGuards(JwtAdminGuard)
   @Get('/list')
   async getUserList() {
-    // TODO: Pagination here maybe?
+    // FIX: Pagination here maybe?
     return this.userService.listUsers();
   }
 
@@ -58,5 +59,26 @@ export class UserController {
   @Get('/detail/:id')
   async getUserDeatails(@Param('id') id: string) {
     return this.userService.getSingleUser(id);
+  }
+
+  @UseGuards(JwtAdminGuard)
+  @Patch('/update/:id')
+  async updateUser(@Param('id') id: string) {
+    // TODO: Implement user update
+    console.log('implement this', id);
+  }
+
+  @UseGuards(JwtAdminGuard)
+  @Patch('/disable/:id')
+  async disableUser(@Param('id') id: string) {
+    // TODO: Implement user disable
+    console.log('disable user', id);
+  }
+
+  @UseGuards(JwtAdminGuard)
+  @Patch('/make-admin/:id')
+  async makeUserAdmin(@Param('id') id: string) {
+    // TODO: Implement user make admin
+    console.log('make user admin', id);
   }
 }
