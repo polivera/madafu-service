@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -113,5 +114,35 @@ export class MonthlyEntryController {
     // The change amount month by month should be done when converting to daily entry
     // Remember to check for userId as well
     console.log('Update monthly entry', id);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Get('/details/:id')
+  async getMonthlyEntryDetails(@Param('id') id: string) {
+    // TODO: Implement this
+
+    // We need this to be able to edit
+    // Remember to filter by user id as well
+    console.log('Implement get monthly entry details', id);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Delete('/remote/:id')
+  async remoteMonthlyExpense(@Param('id') id: string) {
+    // TODO: Implement this
+
+    // Remove monthly expense if there are not daily entries for this
+    // Remember to filter by user id as well
+    console.log('Implement monthly entry remove', id);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Put('/terminate/:id')
+  async terminateMonthlyEntry(@Param('id') id: string) {
+    // TODO: Implement this
+
+    // The id is for monthly expense not entry
+    // Remember to filter by user id as well
+    console.log('Implement monthly entry termination', id);
   }
 }

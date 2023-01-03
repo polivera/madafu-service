@@ -6,6 +6,7 @@ import { Account, DEFAULT_ACCOUNT_NAME } from '../account/account.entity';
 import { UserStatus } from './user.types';
 import { UserRequestCreateDto } from './dtos/user.request.create.dto';
 import { hashPassword } from 'src/utils';
+import { UserRequestUpdateDto } from './dtos/user.request.update.dto';
 
 @Injectable()
 export class UserService {
@@ -13,6 +14,10 @@ export class UserService {
   private readonly repository: Repository<User>;
 
   constructor(private readonly dataSource: DataSource) {}
+
+  async getUserById(id: string): Promise<User> {
+    return this.repository.findOne({ where: { id } });
+  }
 
   async createUser(createUserDto: UserRequestCreateDto) {
     const userModel = new User();
@@ -28,6 +33,18 @@ export class UserService {
       await manager.save(accountModel);
       return newUserModel;
     });
+  }
+
+  async updateUser(updateUserDto: UserRequestUpdateDto, userId: string) {
+    if (updateUserDto.password) {
+      updateUserDto.password = await hashPassword(updateUserDto.password);
+    }
+    return this.dataSource
+      .createQueryBuilder()
+      .update(User)
+      .set(updateUserDto)
+      .where('id = :userId', { userId })
+      .execute();
   }
 
   async findVerifiedUserByEmail(email: string): Promise<User> {

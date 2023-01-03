@@ -6,9 +6,11 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Req,
   UseGuards,
 } from '@nestjs/common';
+import { group } from 'console';
 import { ValidationErrorResponse, ErrorCodes } from 'src/utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
 import { SourceRequestCreateDto } from './dtos/source.request.create.dto';
@@ -62,5 +64,23 @@ export class SourceController {
     // to make sure the source belong to the user
     // Only allow source deletion if the balance is 0
     console.log('implement delete account', id, req.user.userId);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Put('/pay/:id')
+  async convertEntryToDaily(@Param('id') id: string) {
+    // TODO: Implement convert monthly to daily entry
+
+    // Remember to look up for use id as well
+    console.log('Implement this', id);
+  }
+
+  @UseGuards(JwtAccessGuard)
+  @Put('pay-group/:group')
+  async convertMonthlyGroupToDaily(@Param('group') group: string) {
+    // TODO: Implement convert monthly group to daily entry
+
+    // Remember to filter by user id as well
+    console.log('Implement this', group);
   }
 }

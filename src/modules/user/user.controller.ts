@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -12,6 +13,7 @@ import { ValidationErrorResponse, ErrorCodes } from '../../utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
 import { JwtAdminGuard } from '../auth/guards/jwt.admin.guard';
 import { UserRequestCreateDto } from './dtos/user.request.create.dto';
+import { UserRequestUpdateDto } from './dtos/user.request.update.dto';
 import { UserService } from './user.service';
 
 @Controller('user')
@@ -24,7 +26,7 @@ export class UserController {
     const emailTaken = await this.userService.findUserByEmail(
       userCreateDto.email,
     );
-    if (!emailTaken) {
+    if (emailTaken) {
       return ValidationErrorResponse.builder()
         .addErrorMessage(`email: ${ErrorCodes.DUPLICATE_VALUE}`)
         .badRequestResponse();
@@ -48,6 +50,13 @@ export class UserController {
     return dbUser;
   }
 
+  @UseGuards(JwtAccessGuard)
+  @Get('/self-update')
+  async userSelfUpdate(@Req() req: any) {
+    // TODO: Implement this
+    console.log(req.user.userId);
+  }
+
   @UseGuards(JwtAdminGuard)
   @Get('/list')
   async getUserList() {
@@ -63,9 +72,35 @@ export class UserController {
 
   @UseGuards(JwtAdminGuard)
   @Patch('/update/:id')
-  async updateUser(@Param('id') id: string) {
-    // TODO: Implement user update
-    console.log('implement this', id);
+  async updateUser(
+    @Param('id') id: string,
+    @Body() updateUserDto: UserRequestUpdateDto,
+  ) {
+    const dbUserById = await this.userService.getUserById(id);
+    if (!dbUserById) {
+      throw new NotFoundException();
+    }
+
+    if (updateUserDto.email) {
+      const emailTaken = await this.userService.findUserByEmail(
+        updateUserDto.email,
+      );
+      if (emailTaken && emailTaken.id !== id) {
+        return ValidationErrorResponse.builder()
+          .addErrorMessage(`email: ${ErrorCodes.DUPLICATE_VALUE}`)
+          .badRequestResponse();
+      }
+    }
+
+    // TODO: Review response logic and update response logic
+    const result = await this.userService.updateUser(updateUserDto, id);
+    if (result.affected !== 1) {
+      // TODO: Create an error code when no records are updated
+      return ValidationErrorResponse.builder()
+        .addErrorMessage(`no record was update`)
+        .internalServerError();
+    }
+    return;
   }
 
   @UseGuards(JwtAdminGuard)

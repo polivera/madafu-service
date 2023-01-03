@@ -1,5 +1,5 @@
 @host=http://localhost:3000
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYjU2ZWU1OC1jM2M0LTQ3MDUtODMzZi1hODBiZmY1M2JkMTkiLCJhY2NvdW50SWQiOiI4NDE3NGVmYi0wNTMwLTRjNmYtOGJkZC04MDY3ZGM3NDdjNGQiLCJlbWFpbCI6InRlc3RAdGVzdC5sb2NhbCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY3MjM4MTUzNCwiZXhwIjoxNjcyNDY3OTM0fQ.MYq4AVGRZMcswoYpLVIWWtYbOsSjRP_g3bsQClJ93N8
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYjU2ZWU1OC1jM2M0LTQ3MDUtODMzZi1hODBiZmY1M2JkMTkiLCJhY2NvdW50SWQiOiI4NDE3NGVmYi0wNTMwLTRjNmYtOGJkZC04MDY3ZGM3NDdjNGQiLCJlbWFpbCI6InRlc3RAdGVzdC5sb2NhbCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY3Mjc4MjY3OSwiZXhwIjoxNjcyODY5MDc5fQ.hkbdtcji6sX4_sjfxGJzrUBh9ixD55f-VJpg0Z2Bexk
 ###
 # @name Get user profile
 GET /user/profile
@@ -13,7 +13,7 @@ Content-Type: application/json
 Authorization: Bearer {{token}} 
 
 {
-  "email": "test@test.local",
+  "email": "test3@test.local",
   "password": "Test.123"
 }
 
@@ -29,3 +29,13 @@ GET /user/detail/1b56ee58-c3c4-4705-833f-a80bff53bd19
 Content-Type: application/json
 Authorization: Bearer {{token}}
 
+###
+# @name Update user
+PATCH /user/update/406bfbf8-e07e-4855-b544-f42ab3f7819c
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "email": "testonga23@test.local",
+  "password": "Test.321"
+}
