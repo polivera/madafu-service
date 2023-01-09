@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
@@ -10,15 +11,19 @@ import {
   Req,
   UseGuards,
 } from '@nestjs/common';
-import { group } from 'console';
-import { ValidationErrorResponse, ErrorCodes } from 'src/utils';
+import { ErrorCodes, ValidationErrorResponse } from 'src/utils';
 import { JwtAccessGuard } from '../auth/guards/jwt.access.guard';
+import { DailyEntryService } from '../daily_entry/daily_entry.service';
 import { SourceRequestCreateDto } from './dtos/source.request.create.dto';
+import { SourceRequestUpdateDto } from './dtos/source.request.update.dto';
 import { SourceService } from './source.service';
 
 @Controller('source')
 export class SourceController {
-  constructor(private readonly sourceService: SourceService) {}
+  constructor(
+    private readonly sourceService: SourceService,
+    private readonly dailyEntryService: DailyEntryService,
+  ) {}
 
   @UseGuards(JwtAccessGuard)
   @Post('/create')
@@ -46,13 +51,35 @@ export class SourceController {
 
   @UseGuards(JwtAccessGuard)
   @Patch('/update/:id')
-  async updateSource(@Param('id') id: string, @Req() req: any) {
-    // TODO: Implement source update
+  async updateSource(
+    @Param('id') id: string,
+    @Body() sourceUpdate: SourceRequestUpdateDto,
+    @Req() req: any,
+  ) {
+    const existingSource = await this.sourceService.getSourceById(id);
+    if (!existingSource || existingSource.accountId !== req.user.accountId) {
+      throw new NotFoundException();
+    }
 
-    // remember to look for source id and user id before update
-    // to make sure the source belong to the user
-    // If the source has been use for some expense, you can only edit name
-    console.log('implement source update', id, req.user.userId);
+    const sourceEntries = await this.dailyEntryService.getEntriesBySourceId(id);
+    if (
+      sourceEntries.length > 0 &&
+      (sourceUpdate.amount || sourceUpdate.currency || sourceUpdate.type)
+    ) {
+      return ValidationErrorResponse.builder()
+        .addErrorMessage(
+          'Cannot change type, amount or currency for this source because is already in use',
+        )
+        .badRequestResponse();
+    }
+
+    const result = await this.sourceService.updateSource(sourceUpdate, id);
+    if (result.affected !== 1) {
+      return ValidationErrorResponse.builder()
+        .addErrorMessage(ErrorCodes.NO_UPDATE_ERROR)
+        .internalServerError();
+    }
+    return;
   }
 
   @UseGuards(JwtAccessGuard)

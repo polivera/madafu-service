@@ -1,5 +1,5 @@
 @host=http://localhost:3000
-@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYjU2ZWU1OC1jM2M0LTQ3MDUtODMzZi1hODBiZmY1M2JkMTkiLCJhY2NvdW50SWQiOiI4NDE3NGVmYi0wNTMwLTRjNmYtOGJkZC04MDY3ZGM3NDdjNGQiLCJlbWFpbCI6InRlc3RAdGVzdC5sb2NhbCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY3MTY4MjUwNywiZXhwIjoxNjcxNzY4OTA3fQ.SHjw5vpGFvh74yUpWobi6yjnUiqHcnJ1IQSdtSTj8m0
+@token=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxYjU2ZWU1OC1jM2M0LTQ3MDUtODMzZi1hODBiZmY1M2JkMTkiLCJhY2NvdW50SWQiOiI4NDE3NGVmYi0wNTMwLTRjNmYtOGJkZC04MDY3ZGM3NDdjNGQiLCJlbWFpbCI6InRlc3RAdGVzdC5sb2NhbCIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTY3MzI1NjQzNiwiZXhwIjoxNjczMzQyODM2fQ.xo1eoNKZpSzWZygFdsTpyIlevw-XTJ2NVlzQ7bc2rHY
 ###
 # @name Get list of sources 
 GET /source/list
@@ -13,10 +13,22 @@ Content-Type: application/json
 Authorization: Bearer {{token}} 
 
 {
-  "name": "Visa Galicia",
+  "name": "Mastercard Banchota",
   "currency": "EUR",
-  "amount": 500,
-  "type": "CREDIT"
+  "amount": 14700,
+  "type": "DEBIT"
 }
 
+###
+# @name Update source
+PATCH /source/update/8e80fe2a-6c0d-4299-bf6f-cdb0864434af
+Content-Type: application/json
+Authorization: Bearer {{token}}
+
+{
+  "name": "Le 3 master",
+  "currency": "USD",
+  "amount": 403,
+  "type": "CREDIT"
+}
 

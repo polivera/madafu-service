@@ -66,4 +66,11 @@ export class DailyEntryService {
       return newEntry;
     });
   }
+
+  async getEntriesBySourceId(id: string): Promise<DailyEntry[]> {
+    return this.repository
+      .createQueryBuilder('de')
+      .where(`de.${DailyEntry.SOURCE_FIELD} = :id`, { id })
+      .getMany();
+  }
 }

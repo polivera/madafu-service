@@ -10,6 +10,8 @@ import { Account } from '../account/account.entity';
 
 @Entity('sources')
 export class Source {
+  static readonly ID_FIELD = 'id';
+
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

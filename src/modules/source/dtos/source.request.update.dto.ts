@@ -1,23 +1,24 @@
-import { IsEnum, IsNotEmpty, IsNumber, IsString } from 'class-validator';
+import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
 import { Currency, SourceType } from 'src/app.types';
 import { ErrorCodes } from 'src/utils';
 
-export class SourceRequestCreateDto {
-  @IsNotEmpty({ message: `name: ${ErrorCodes.NOT_EMPTY}` })
+export class SourceRequestUpdateDto {
+  @IsOptional()
   @IsString({ message: `name: ${ErrorCodes.INVALID_TYPE}` })
-  name: string;
+  name?: string;
 
+  @IsOptional()
   @IsEnum(Currency, { message: `currency: ${ErrorCodes.INVALID_VALUE}` })
-  currency: Currency;
+  currency?: Currency;
 
-  @IsNotEmpty({ message: `amount: ${ErrorCodes.NOT_EMPTY}` })
+  @IsOptional()
   @IsNumber(
     { maxDecimalPlaces: 2 },
     { message: `amount: ${ErrorCodes.INVALID_TYPE}` },
   )
-  amount: number;
+  amount?: number;
 
-  @IsNotEmpty({ message: `type: ${ErrorCodes.NOT_EMPTY}` })
+  @IsOptional()
   @IsEnum(SourceType, { message: `type: ${ErrorCodes.INVALID_VALUE}` })
-  type: SourceType;
+  type?: SourceType;
 }

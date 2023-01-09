@@ -12,6 +12,7 @@ export enum ErrorCodes {
   RELATION_NOT_FOUND = 'RELATION_NOT_FOUND',
   CURRENCY_MISMATCH = 'CURRENCY_MISMATCH',
   SOURCE_CANT_PAY = 'SOURCE_CANT_PAY',
+  NO_UPDATE_ERROR = 'NO_UPDATE_ERROR',
 }
 
 export function IsValidPassword(validationOptions?: ValidationOptions) {

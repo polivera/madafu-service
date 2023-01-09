@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './user.entity';
 import { DataSource, Repository } from 'typeorm';
 import { Account, DEFAULT_ACCOUNT_NAME } from '../account/account.entity';
-import { UserStatus } from './user.types';
+import { UserRoles, UserStatus } from './user.types';
 import { UserRequestCreateDto } from './dtos/user.request.create.dto';
 import { hashPassword } from 'src/utils';
 import { UserRequestUpdateDto } from './dtos/user.request.update.dto';
@@ -96,5 +96,28 @@ export class UserService {
       ])
       .where(`u.${User.ID_FIELD} = :id`, { id })
       .getOne();
+  }
+
+  async disableUser(id: string) {
+    return (
+      this.repository
+        .createQueryBuilder()
+        .update(User)
+        .set({ status: UserStatus.DISABLED })
+        .where(`${User.ID_FIELD} = :id`, { id })
+        // Admin cannot disable other admins
+        .andWhere(`${User.ROLE_FIELD} != :role`, { role: UserRoles.ADMIN })
+        .execute()
+    );
+  }
+
+  async makeAdmin(id: string) {
+    return this.repository
+      .createQueryBuilder()
+      .update(User)
+      .set({ role: UserRoles.ADMIN })
+      .where(`${User.ID_FIELD} = :id`, { id })
+      .andWhere(`${User.ROLE_FIELD} = :role`, { role: UserRoles.USER })
+      .execute();
   }
 }

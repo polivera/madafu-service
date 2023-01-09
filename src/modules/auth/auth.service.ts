@@ -20,7 +20,7 @@ export class AuthService {
     private tokenService: TokenService,
     private jwtService: JwtService,
     private configService: ConfigService,
-  ) { }
+  ) {}
 
   async isValidUser(email: string, password: string): Promise<boolean> {
     const dbUser = await this.userService.findVerifiedUserByEmail(email);

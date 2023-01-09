@@ -52,9 +52,31 @@ export class UserController {
 
   @UseGuards(JwtAccessGuard)
   @Get('/self-update')
-  async userSelfUpdate(@Req() req: any) {
-    // TODO: Implement this
-    console.log(req.user.userId);
+  async userSelfUpdate(
+    @Body() updateUserDto: UserRequestUpdateDto,
+    @Req() req: any,
+  ) {
+    if (updateUserDto.email) {
+      const emailTaken = await this.userService.findUserByEmail(
+        updateUserDto.email,
+      );
+      if (emailTaken && emailTaken.id !== req.user.userId) {
+        return ValidationErrorResponse.builder()
+          .addErrorMessage(`email: ${ErrorCodes.DUPLICATE_VALUE}`)
+          .badRequestResponse();
+      }
+    }
+
+    const result = await this.userService.updateUser(
+      updateUserDto,
+      req.user.userId,
+    );
+    if (result.affected !== 1) {
+      return ValidationErrorResponse.builder()
+        .addErrorMessage(ErrorCodes.NO_UPDATE_ERROR)
+        .internalServerError();
+    }
+    return;
   }
 
   @UseGuards(JwtAdminGuard)
@@ -92,12 +114,10 @@ export class UserController {
       }
     }
 
-    // TODO: Review response logic and update response logic
     const result = await this.userService.updateUser(updateUserDto, id);
     if (result.affected !== 1) {
-      // TODO: Create an error code when no records are updated
       return ValidationErrorResponse.builder()
-        .addErrorMessage(`no record was update`)
+        .addErrorMessage(ErrorCodes.NO_UPDATE_ERROR)
         .internalServerError();
     }
     return;
@@ -106,14 +126,24 @@ export class UserController {
   @UseGuards(JwtAdminGuard)
   @Patch('/disable/:id')
   async disableUser(@Param('id') id: string) {
-    // TODO: Implement user disable
-    console.log('disable user', id);
+    const result = await this.userService.disableUser(id);
+    if (result.affected !== 1) {
+      return ValidationErrorResponse.builder()
+        .addErrorMessage(ErrorCodes.NO_UPDATE_ERROR)
+        .internalServerError();
+    }
+    return;
   }
 
   @UseGuards(JwtAdminGuard)
   @Patch('/make-admin/:id')
   async makeUserAdmin(@Param('id') id: string) {
-    // TODO: Implement user make admin
-    console.log('make user admin', id);
+    const result = await this.userService.makeAdmin(id);
+    if (result.affected !== 1) {
+      return ValidationErrorResponse.builder()
+        .addErrorMessage(ErrorCodes.NO_UPDATE_ERROR)
+        .internalServerError();
+    }
+    return;
   }
 }

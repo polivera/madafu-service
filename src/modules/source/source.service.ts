@@ -1,13 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { SourceRequestCreateDto } from './dtos/source.request.create.dto';
+import { SourceRequestUpdateDto } from './dtos/source.request.update.dto';
 import { Source } from './source.entity';
 
 @Injectable()
 export class SourceService {
   @InjectRepository(Source)
   private readonly repository: Repository<Source>;
+
+  constructor(private readonly dataSource: DataSource) {}
 
   async saveSource(
     createSourceDto: SourceRequestCreateDto,
@@ -38,7 +41,16 @@ export class SourceService {
     });
   }
 
-  async getSourceById(sourceId: string): Promise<Source> {
-    return this.repository.findOneBy({ id: sourceId });
+  async getSourceById(id: string): Promise<Source> {
+    return this.repository.findOne({ where: { id } });
+  }
+
+  async updateSource(sourceData: SourceRequestUpdateDto, id: string) {
+    return this.dataSource
+      .createQueryBuilder()
+      .update(Source)
+      .set(sourceData)
+      .where(`${Source.ID_FIELD} = :id`, { id })
+      .execute();
   }
 }
